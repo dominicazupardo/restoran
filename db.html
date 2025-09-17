@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cynthia Curry - Login / Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #ffcc70, #ff8177);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #ff6a00;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #e65c00;
+    }
+    p {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    a {
+      color: #ff6a00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .dashboard {
+      display: none;
+    }
+    .logout-btn {
+      background: #d9534f;
+    }
+    .logout-btn:hover {
+      background: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="auth-container">
+    <h2 id="form-title">Login</h2>
+    <input type="text" id="username" placeholder="Username" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button onclick="login()">Login</button>
+    <p id="toggle-text">Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+  </div>
+
+  <div class="container dashboard" id="dashboard">
+    <h2>Welcome to Cynthia Curry!</h2>
+    <p id="welcome-msg"></p>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    let isSignup = false;
+
+    function showSignup() {
+      isSignup = true;
+      document.getElementById("form-title").innerText = "Sign Up";
+      document.querySelector("button").setAttribute("onclick", "signup()");
+      document.getElementById("toggle-text").innerHTML = 
+        "Already have an account? <a href='#' onclick='showLogin()'>Login</a>";
+    }
+
+    function showLogin() {
+      isSignup = false;
+      document.getElementById("form-title").innerText = "Login";
+      document.querySelector("button").setAttribute("onclick", "login()");
+      document.getElementById("toggle-text").innerHTML = 
+        "Don't have an account? <a href='#' onclick='showSignup()'>Sign Up</a>";
+    }
+
+    function signup() {
+      let username = document.getElementById("username").value.trim();
+      let password = document.getElementById("password").value.trim();
+
+      if(username === "" || password === "") {
+        alert("Please enter both username and password.");
+        return;
+      }
+
+      if(localStorage.getItem(username)) {
+        alert("Username already exists!");
+        return;
+      }
+
+      localStorage.setItem(username, password);
+      alert("Signup successful! You can now login.");
+      showLogin();
+    }
+
+    function login() {
+      let username = document.getElementById("username").value.trim();
+      let password = document.getElementById("password").value.trim();
+
+      let storedPassword = localStorage.getItem(username);
+
+      if(storedPassword && storedPassword === password) {
+        document.getElementById("auth-container").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("welcome-msg").innerText = "Hello, " + username + "!";
+      } else {
+        alert("Invalid username or password.");
+      }
+    }
+
+    function logout() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("auth-container").style.display = "block";
+      showLogin();
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+    }
+  </script>
+</body>
+</html>
